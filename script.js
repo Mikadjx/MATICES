@@ -382,15 +382,52 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Contact Form Handling
     const contactForm = document.getElementById('contactForm');
-    
+
     if (contactForm) {
-        contactForm.addEventListener('submit', function(event) {
+        contactForm.addEventListener('submit', async function(event) {
             event.preventDefault();
-            
-            // Form validation and submission logic would go here
-            // For now, let's just show an alert
-            alert('Votre message a été envoyé !');
-            contactForm.reset();
+
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn ? submitBtn.textContent : '';
+
+            // Disable button and show loading state
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Envoi en cours...';
+            }
+
+            try {
+                const formData = new FormData(contactForm);
+
+                const response = await fetch(contactForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    alert('Votre message a été envoyé avec succès ! Nous vous répondrons bientôt.');
+                    contactForm.reset();
+                } else {
+                    const data = await response.json();
+                    if (data.errors) {
+                        alert('Erreur: ' + data.errors.map(e => e.message).join(', '));
+                    } else {
+                        alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur d\'envoi:', error);
+                alert('Une erreur de connexion est survenue. Veuillez vérifier votre connexion internet et réessayer.');
+            } finally {
+                // Re-enable button
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                }
+            }
         });
     }
     

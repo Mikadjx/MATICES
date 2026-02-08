@@ -1,0 +1,66 @@
+services:
+  database:
+    image: postgres:15-alpine
+    container_name: matices_db
+    environment:
+      POSTGRES_DB: matices
+      POSTGRES_USER: matices_user
+      POSTGRES_PASSWORD: matices_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - matices_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U matices_user -d matices"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  symfony:
+    build:
+      context: ./symfony-backend
+      dockerfile: Dockerfile
+    container_name: matices_symfony
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./symfony-backend:/var/www/symfony
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://matices_user:matices_pass@database:5432/matices?serverVersion=15&charset=utf8"
+    networks:
+      - matices_network
+
+  frontend:
+    image: nginx:alpine
+    container_name: matices_frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - symfony
+    networks:
+      - matices_network
+
+  adminer:
+    image: adminer
+    container_name: matices_adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - matices_network
+    depends_on:
+      - database
+
+volumes:
+  db_data:
+
+networks:
+  matices_network:
+    driver: bridge

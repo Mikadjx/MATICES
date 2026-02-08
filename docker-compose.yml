@@ -19,10 +19,9 @@ services:
       retries: 5
 
   symfony:
-    build:
-      context: ./symfony-backend
-      dockerfile: Dockerfile
+    image: php:8.4-cli
     container_name: matices_symfony
+    working_dir: /var/www/symfony
     ports:
       - "8000:8000"
     volumes:
@@ -34,6 +33,16 @@ services:
       DATABASE_URL: "postgresql://matices_user:matices_pass@database:5432/matices?serverVersion=15&charset=utf8"
     networks:
       - matices_network
+    command: |
+      sh -c "apt-get update && 
+             apt-get install -y git unzip libzip-dev libpq-dev curl libicu-dev && 
+             docker-php-ext-install pdo pdo_pgsql zip opcache intl &&
+             curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
+             curl -sS https://get.symfony.com/cli/installer | bash &&
+             mv /root/.symfony*/bin/symfony /usr/local/bin/symfony &&
+             composer install --no-interaction &&
+             chmod -R 777 var/ public/ &&
+             symfony server:start --no-tls --port=8000 --allow-http"
 
   frontend:
     image: nginx:alpine

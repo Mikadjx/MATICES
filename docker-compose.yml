@@ -61,7 +61,7 @@ services:
     image: adminer
     container_name: matices_adminer
     ports:
-      - "8080:8080"
+     - "8081:8080"
     networks:
       - matices_network
     depends_on:

@@ -45,9 +45,6 @@
         "sort-packages": true,
         "audit": {
             "block-insecure": false
-        },
-        "platform": {
-            "ext-pdo_sqlsrv": "5.10"
         }
     },
     "autoload": {

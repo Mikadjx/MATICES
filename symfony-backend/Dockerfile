@@ -1,4 +1,4 @@
-FROM php:8.4-cli
+FROM php:8.4-fpm
 
 # Installation des dépendances
 RUN apt-get update && apt-get install -y \
@@ -16,18 +16,14 @@ RUN apt-get update && apt-get install -y \
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Installer Symfony CLI
-RUN curl -sS https://get.symfony.com/cli/installer | bash && \
-    mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
-
 WORKDIR /var/www/symfony
 
 # Créer les dossiers nécessaires
 RUN mkdir -p var/cache var/log public/uploads/photos
 
-EXPOSE 8000
+EXPOSE 9000
 
 # Démarrage
-CMD composer install --no-interaction && \
-    chmod -R 777 var/ public/uploads/ && \
-    symfony server:start --no-tls --port=8000 --allow-http
+CMD composer install --no-interaction --optimize-autoloader && \
+    chown -R www-data:www-data var/ public/uploads/ && \
+    php-fpm

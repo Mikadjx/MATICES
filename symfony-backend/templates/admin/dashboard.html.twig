@@ -1,0 +1,50 @@
+# Créer le dossier
+New-Item -ItemType Directory -Force -Path "templates\admin"
+
+# Créer et écrire le fichier en une commande
+@"
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}
+    <h1 class="title">
+        <i class="fa fa-guitar"></i> Bienvenue dans l'administration MATICES
+    </h1>
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3><i class="fas fa-music"></i> Gestion du contenu</h3>
+                    <p>Utilisez le menu de gauche pour gérer :</p>
+                    <ul>
+                        <li><strong>Photos</strong> : Uploadez et gérez les photos de la galerie</li>
+                        <li><strong>Vidéos</strong> : Ajoutez des vidéos YouTube</li>
+                        <li><strong>Musique</strong> : Uploadez des fichiers MP3 pour le lecteur</li>
+                        <li><strong>Événements</strong> : Gérez les concerts et événements</li>
+                        <li><strong>Membres</strong> : Gérez les utilisateurs du groupe</li>
+                    </ul>
+                    
+                    <hr>
+                    
+                    <div class="mt-4">
+                        <h4><i class="fas fa-info-circle"></i> Conseils</h4>
+                        <ul>
+                            <li>Utilisez le champ <strong>"Position"</strong> pour contrôler l'ordre d'affichage</li>
+                            <li>Décochez <strong>"Visible"</strong> pour masquer un élément sans le supprimer</li>
+                            <li>Les fichiers uploadés sont automatiquement renommés pour éviter les conflits</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{{ path('app_home') }}" class="btn btn-primary" target="_blank">
+                            <i class="fas fa-eye"></i> Voir le site public
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+"@ | Out-File -FilePath "templates\admin\dashboard.html.twig" -Encoding UTF8

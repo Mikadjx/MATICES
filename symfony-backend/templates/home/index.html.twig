@@ -1,0 +1,241 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{# ===================== SECTION HERO ===================== #}
+<section id="home">
+    <div class="hero">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1>MATICES</h1>
+            <h2>Rock • Soul • Funk • Reggae</h2>
+            <p>Groupe de reprises énergique et polyvalent</p>
+            <a href="#music" class="btn btn-primary">Découvrir notre musique</a>
+        </div>
+    </div>
+</section>
+
+{# ===================== SECTION À PROPOS ===================== #}
+<section id="about" class="section">
+    <div class="container">
+        <h2 class="section-title">À Propos</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>MATICES est un groupe de reprises dynamique qui explore différents styles musicaux, du rock au
+                    reggae, en passant par la soul et le funk. Nous apportons notre touche unique à chaque morceau
+                    que nous reprenons.</p>
+                <p>Formé en 2023, notre groupe se compose de musiciens passionnés qui partagent l'amour de la
+                    musique et de la scène.</p>
+            </div>
+            <div class="about-image">
+                <img style="width: 500px; height: 500px;"
+                    src="{{ asset('images/469018645_17926999868988152_7558610729275431209_n.jpg') }}"
+                    alt="MATICES en concert"
+                    class="img-placeholder">
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ===================== SECTION GALERIE ===================== #}
+<section id="gallery" class="section">
+    <div class="container">
+        <h2 class="section-title">Galerie</h2>
+
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">Tout</button>
+            <button class="filter-btn" data-filter="photos">Photos</button>
+            <button class="filter-btn" data-filter="videos">Vidéos</button>
+        </div>
+
+        <div class="gallery-grid">
+
+            {# -------- PHOTOS DYNAMIQUES -------- #}
+            {% if photos is empty %}
+                <p class="no-content">Aucune photo disponible pour le moment.</p>
+            {% else %}
+                {% for photo in photos %}
+                    <div class="gallery-item photos">
+                        <img
+                            src="{{ vich_uploader_asset(photo, 'imageFile') }}"
+                            alt="{{ photo.title }}"
+                            class="img-placeholder"
+                            loading="lazy"
+                        >
+                        <div class="overlay">
+                            <div class="overlay-content">
+                                <h3>{{ photo.eventName ?? photo.title }}</h3>
+                                <p>{{ photo.formattedEventDate }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {# -------- VIDÉOS YOUTUBE DYNAMIQUES -------- #}
+            {% if videos is empty %}
+                <p class="no-content">Aucune vidéo disponible pour le moment.</p>
+            {% else %}
+                {% for video in videos %}
+                    <div class="gallery-item videos">
+                        <div class="video-thumbnail" data-video-id="{{ video.youtubeId }}">
+                            <img
+                                src="{{ video.youtubeThumbnailUrl }}"
+                                alt="{{ video.title }}"
+                                class="img-placeholder"
+                                loading="lazy"
+                                onerror="this.src='{{ video.youtubeThumbnailUrl('hqdefault') }}'"
+                            >
+                            <i class="fas fa-play-circle play-icon"></i>
+                        </div>
+                        <div class="overlay">
+                            <div class="overlay-content">
+                                <h3>{{ video.title }}</h3>
+                                <p>{{ video.eventName ?? video.description }}</p>
+                                <button class="watch-btn" data-video-id="{{ video.youtubeId }}">
+                                    Regarder
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+        </div>
+
+        <div class="load-more">
+            <button class="btn btn-secondary">Voir plus</button>
+        </div>
+
+    </div>
+</section>
+
+{# ===================== SECTION MUSIQUE ===================== #}
+<section id="music" class="section dark-bg">
+    <div class="container">
+        <h2 class="section-title light">Notre Musique</h2>
+
+        <audio id="audio-player" preload="metadata"></audio>
+
+        <div class="music-player">
+            <div class="player-info">
+                <div class="now-playing">
+                    <h3>En écoute: <span id="track-title">Sélectionnez une chanson</span></h3>
+                    <p>Album: <span id="album-name">MATICES Live</span></p>
+                </div>
+                <div class="player-controls">
+                    <button id="prev-track" title="Piste précédente">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button id="play-pause" title="Lecture/Pause">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button id="next-track" title="Piste suivante">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <div class="time-info">
+                        <span id="current-time">0:00</span>
+                        <span id="total-time">0:00</span>
+                    </div>
+                </div>
+                <div class="volume-container">
+                    <i class="fas fa-volume-up" id="volume-icon"></i>
+                    <input type="range" id="volume-slider" min="0" max="100" value="80">
+                </div>
+            </div>
+
+            <div class="playlist">
+                <h3>Playlist</h3>
+
+                {% if songs is empty %}
+                    <p style="color: #f9f9f9; padding: 20px;">
+                        Aucune chanson disponible pour le moment.
+                    </p>
+                {% else %}
+                    <ul id="playlist-items">
+                        {% for song in songs %}
+                            <li class="playlist-item"
+                                data-src="{{ vich_uploader_asset(song, 'musicFile') }}">
+                                <span class="track-number">{{ loop.index }}</span>
+                                <span class="track-info">
+                                    <span class="track-title">
+                                        {{ song.title }} - {{ song.artist }}
+                                    </span>
+                                    <span class="track-duration">
+                                        {{ song.formattedDuration }}
+                                    </span>
+                                </span>
+                                <button class="play-track">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ===================== SECTION CONTACT ===================== #}
+<section id="contact" class="section">
+    <div class="container">
+        <h2 class="section-title">Contact</h2>
+        <div class="contact-content">
+
+            <div class="contact-info">
+                <h3>Réservez-nous pour votre événement!</h3>
+                <p>
+                    <i class="fas fa-envelope"></i>
+                    Email: <a href="mailto:maticesorleans@gmail.com">maticesorleans@gmail.com</a>
+                </p>
+                <p>
+                    <i class="fas fa-phone"></i>
+                    Téléphone: <a href="tel:+33675291452">06 75 29 14 52</a>
+                </p>
+                <div class="social-links">
+                    <a target="_blank" href="https://www.facebook.com/maticesorleans" class="social-link">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a target="_blank" href="https://www.instagram.com/p/C8sQuuDKbvg" class="social-link">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a target="_blank" href="https://www.youtube.com/@maticesorleans" class="social-link">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <form id="contactForm" action="https://formspree.io/f/xreqqkbo" method="POST">
+                    <div class="form-group">
+                        <label for="name">Nom</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Sujet</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

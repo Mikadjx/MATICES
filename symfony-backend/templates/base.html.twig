@@ -1,17 +1,95 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MATICES - Groupe de Reprises{% endblock %}</title>
+    
+    {# Font Awesome #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    {# Google Fonts #}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@500;700&display=swap">
+    
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+    {% endblock %}
+</head>
+<body>
+    <header id="header">
+        <nav id="navbar">
+            <div class="container">
+                <div class="logo">
+                    <h1>MATICES</h1>
+                </div>
+                <div class="menu-toggle" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="{{ path('app_home') }}#home" class="{% if app.request.get('_route') == 'app_home' %}active{% endif %}">Accueil</a></li>
+                    <li><a href="{{ path('app_home') }}#about">À Propos</a></li>
+                    <li><a href="{{ path('app_home') }}#gallery">Galerie</a></li>
+                    <li><a href="{{ path('app_home') }}#music">Musique</a></li>
+                    <li><a href="{{ path('app_home') }}#contact">Contact</a></li>
+                    <li><a href="{{ path('app_members') }}" class="login-btn">Espace Membres</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+    {% block body %}{% endblock %}
+
+    <footer id="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>MATICES</h2>
+                    <p>Rock • Soul • Funk • Reggae</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="{{ path('app_home') }}#home">Accueil</a></li>
+                        <li><a href="{{ path('app_home') }}#about">À Propos</a></li>
+                        <li><a href="{{ path('app_home') }}#gallery">Galerie</a></li>
+                        <li><a href="{{ path('app_home') }}#music">Musique</a></li>
+                        <li><a href="{{ path('app_home') }}#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h3>Suivez-nous</h3>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/maticesorleans" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/p/C8sQuuDKbvg" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.youtube.com/@maticesorleans" target="_blank" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="newsletter">
+                    <h3>Newsletter</h3>
+                    <p>Restez informé de nos prochains concerts</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Votre email" required>
+                        <button type="submit" class="btn btn-primary">S'inscrire</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 MATICES. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="video-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="video-iframe-container">
+                <iframe id="video-iframe" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    {% block javascripts %}
+        <script src="{{ asset('app.js') }}"></script>
+    {% endblock %}
+</body>
 </html>

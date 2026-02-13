@@ -26,8 +26,6 @@ class Photo
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageName = null;
 
-    // Ce champ n'est PAS en base de données
-    // Il sert uniquement pour l'upload via le formulaire
     #[Vich\UploadableField(mapping: 'photos', fileNameProperty: 'imageName')]
     private ?File $imageFile = null;
 
@@ -36,6 +34,16 @@ class Photo
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
+
+    // NOUVEAUX CHAMPS pour la galerie dynamique
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $eventName = null;
+
+    #[ORM\Column(options: ['default' => 0])]
+    private ?int $position = 0;
+
+    #[ORM\Column(options: ['default' => true])]
+    private ?bool $isVisible = true;
 
     public function getId(): ?int
     {
@@ -75,7 +83,6 @@ class Photo
         return $this;
     }
 
-    // Getter et Setter pour l'upload de fichier
     public function getImageFile(): ?File
     {
         return $this->imageFile;
@@ -85,7 +92,6 @@ class Photo
     {
         $this->imageFile = $imageFile;
 
-        // IMPORTANT : Met à jour updatedAt pour forcer Doctrine à sauvegarder
         if (null !== $imageFile) {
             $this->updatedAt = new \DateTimeImmutable();
         }
@@ -113,9 +119,59 @@ class Photo
         return $this;
     }
 
-    // Pour l'affichage dans EasyAdmin
+    public function getEventName(): ?string
+    {
+        return $this->eventName;
+    }
+
+    public function setEventName(?string $eventName): static
+    {
+        $this->eventName = $eventName;
+        return $this;
+    }
+
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): static
+    {
+        $this->position = $position;
+        return $this;
+    }
+
+    public function isVisible(): ?bool
+    {
+        return $this->isVisible;
+    }
+
+    public function setIsVisible(bool $isVisible): static
+    {
+        $this->isVisible = $isVisible;
+        return $this;
+    }
+
     public function __toString(): string
     {
         return $this->title ?? 'Photo #' . $this->id;
+    }
+
+    public function getFormattedEventDate(): string
+    {
+        if (!$this->eventDate) {
+            return '';
+        }
+        
+        $formatter = new \IntlDateFormatter(
+            'fr_FR',
+            \IntlDateFormatter::LONG,
+            \IntlDateFormatter::NONE,
+            'Europe/Paris',
+            \IntlDateFormatter::GREGORIAN,
+            'MMMM yyyy'
+        );
+        
+        return ucfirst($formatter->format($this->eventDate));
     }
 }

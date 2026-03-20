@@ -12,9 +12,10 @@ services:
   nginx:
     image: nginx:alpine
     container_name: matice_symfony_front
+    ports:
+      - "8902:8902"
     volumes:
-      - ./frontend:/usr/share/nginx/html:ro
-      - ./symfony-backend:/var/www/symfony
+      - ./symfony-backend:/var/www/symfony:ro
       - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     restart: unless-stopped
     depends_on:

@@ -12,7 +12,7 @@ services:
     image: nginx:alpine
     volumes:
       - ./symfony-backend:/var/www/symfony
-      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - php
     restart: unless-stopped

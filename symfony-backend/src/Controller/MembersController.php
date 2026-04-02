@@ -11,6 +11,6 @@ class MembersController extends AbstractController
     #[Route('/members', name: 'app_members')]
     public function login(): Response
     {
-        return $this->render('members/login.html.twig');
+        return $this->render('members/index.html.twig');
     }
 }

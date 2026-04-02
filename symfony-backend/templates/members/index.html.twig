@@ -1,20 +1,69 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello MembersController!{% endblock %}
+{% block title %}Espace Membres - MATICES{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<section class="section" style="min-height: 100vh; padding-top: 120px; background-color: var(--secondary-color);">
+    <div class="container">
+        <h2 class="section-title light">Espace Membres</h2>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        <div style="max-width: 700px; margin: 0 auto;">
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>D:/CESI/Formation/CESI_2025-26/Application/MATICES/symfony-backend/src/Controller/MembersController.php</code></li>
-        <li>Your template at <code>D:/CESI/Formation/CESI_2025-26/Application/MATICES/symfony-backend/templates/members/index.html.twig</code></li>
-    </ul>
-</div>
+            {# Carte profil #}
+            <div style="background: var(--accent-color); border-radius: 10px; padding: 30px; margin-bottom: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+                <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                    <div style="width: 70px; height: 70px; border-radius: 50%; background: var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; flex-shrink: 0;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <h3 style="color: var(--light-color); margin-bottom: 4px;">{{ app.user.fullName }}</h3>
+                        <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">{{ app.user.email }}</p>
+                        {% if app.user.instrument %}
+                            <p style="color: var(--primary-color); font-size: 0.9rem; margin-top: 4px;">
+                                <i class="fas fa-music"></i> {{ app.user.instrument }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <span style="background: var(--primary-color); color: white; padding: 5px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+                                <i class="fas fa-shield-alt"></i> Admin
+                            </span>
+                        {% else %}
+                            <span style="background: rgba(255,255,255,0.1); color: var(--light-color); padding: 5px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+                                <i class="fas fa-user"></i> Membre
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {# Actions #}
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px;">
+
+                {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('admin') }}" style="background: var(--accent-color); border: 2px solid var(--primary-color); border-radius: 10px; padding: 25px 20px; text-align: center; color: var(--light-color); display: block; transition: all 0.3s;">
+                    <i class="fas fa-cogs" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 10px; display: block;"></i>
+                    <strong>Administration</strong>
+                    <p style="font-size: 0.82rem; color: rgba(255,255,255,0.5); margin-top: 5px;">Gérer le contenu du site</p>
+                </a>
+                {% endif %}
+
+                <a href="{{ path('app_home') }}" style="background: var(--accent-color); border: 2px solid transparent; border-radius: 10px; padding: 25px 20px; text-align: center; color: var(--light-color); display: block; transition: all 0.3s;">
+                    <i class="fas fa-home" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 10px; display: block;"></i>
+                    <strong>Site vitrine</strong>
+                    <p style="font-size: 0.82rem; color: rgba(255,255,255,0.5); margin-top: 5px;">Voir le site public</p>
+                </a>
+
+                <a href="{{ path('app_logout') }}" style="background: var(--accent-color); border: 2px solid transparent; border-radius: 10px; padding: 25px 20px; text-align: center; color: var(--light-color); display: block; transition: all 0.3s;">
+                    <i class="fas fa-sign-out-alt" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 10px; display: block;"></i>
+                    <strong>Déconnexion</strong>
+                    <p style="font-size: 0.82rem; color: rgba(255,255,255,0.5); margin-top: 5px;">Quitter l'espace membres</p>
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+</section>
 {% endblock %}

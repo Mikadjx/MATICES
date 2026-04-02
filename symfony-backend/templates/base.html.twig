@@ -31,7 +31,11 @@
                     <li><a href="{{ path('app_home') }}#gallery">Galerie</a></li>
                     <li><a href="{{ path('app_home') }}#music">Musique</a></li>
                     <li><a href="{{ path('app_home') }}#contact">Contact</a></li>
-                    <li><a href="{{ path('app_members') }}" class="login-btn">Espace Membres</a></li>
+                    {% if app.user %}
+                        <li><a href="{{ path('app_members') }}" class="login-btn">Mon Compte</a></li>
+                    {% else %}
+                        <li><a href="{{ path('app_login') }}" class="login-btn">Espace Membres</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </nav>
